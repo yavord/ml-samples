@@ -1,2 +1,2 @@
 # vae
-vae and cvae using keras/tensorflow in Python
+conditional/variational autoencoder using keras and tensorflow in Python
