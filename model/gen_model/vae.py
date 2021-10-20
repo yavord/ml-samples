@@ -9,5 +9,12 @@ import keras.backend as K
 import tensorflow as tf
 
 class VAE():
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        n_input: int,
+        n_labels: int = 10,
+        n_batch: int = 64,
+        n_latent: int = 100,
+        n_hidden: int = 128
+    ):
         pass
