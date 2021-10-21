@@ -32,9 +32,10 @@ class VAE():
         xavier_stddev = 1. / tf.sqrt(in_dim / 2.)
         return tf.random.normal(shape=shape, stddev=xavier_stddev)
 
-    def getQzX(self):
+    def getQzX(
+        self,
+    ):
         X = tf.placeholder(tf.float32, shape=[None, self.n_input])
-        z = tf.placeholder(tf.float32, shape=[None, self.n_latent])
 
         Q_W1 = tf.Variable(self.xavier_init([self.n_input, self.n_hidden]))
         Q_b1 = tf.Variable(tf.zeros(shape=[self.n_hidden]))
@@ -50,4 +51,24 @@ class VAE():
         z_logvar = tf.matmul(h, Q_W2_sigma) + Q_b2_sigma
 
         return z_mu, z_logvar
-        
+
+    def getPXz(
+        self
+    ):
+        z = tf.placeholder(tf.float32, shape=[None, self.n_latent])
+
+        P_W1 = tf.Variable(self.xavier_init([self.n_latent, self.n_hidden]))
+        P_b1 = tf.Variable(tf.zeros(shape=[self.n_hidden]))
+
+        P_W2 = tf.Variable(self.xavier_init([self.n_hidden, self.n_input]))
+        P_b2 = tf.Variable(tf.zeros(shape=[self.n_input]))
+
+        h = tf.nn.relu(tf.matmul(z, P_W1) + P_b1)
+        logits = tf.matmul(h, P_W2) + P_b2
+        prob = tf.nn.sigmoid(logits)
+        return prob, logits
+
+    def train(
+        self
+    ):
+        pass
