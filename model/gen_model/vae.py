@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 # tf.debugging.set_log_device_placement(True)
 
@@ -33,9 +34,8 @@ class VAE():
 
     def encoder(
         self,
+        X
     ):
-        X = tf.keras.Input(shape=(None,self.n_input), dtype=tf.dtypes.float32)
-
         Q_W1 = tf.constant(self.xavier_init([self.n_input, self.n_hidden]))
         Q_b1 = tf.constant(tf.zeros(shape=[self.n_hidden]))
 
@@ -77,10 +77,9 @@ class VAE():
         z = tf.keras.Input(shape=(None,self.n_latent), dtype=tf.dtypes.float32)
         X = tf.keras.Input(shape=(None,self.n_input), dtype=tf.dtypes.float32)
 
-        z_mu, z_logvar = self.encoder()
+        z_mu, z_logvar = self.encoder(X)
         z_sample = self.sample_z(z_mu,z_logvar)
         _, logits = self.decoder(z_sample)
-
         X_samples, _ = self.decoder(z)
 
         # E[log P(X|z)]
@@ -89,9 +88,3 @@ class VAE():
         kl_loss= 0.5 * tf.reduce_sum(tf.exp(z_logvar) + z_mu**2 - 1. - z_logvar, 1)
         # VAE loss
         vae_loss = tf.reduce_mean(recon_loss + kl_loss)
-
-        solver = tf.train.AdamOptimizer().minimize(vae_loss)
-
-        session = tf.Session()
-        session.run(tf.global_variables_initializer())
-
