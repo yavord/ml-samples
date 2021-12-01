@@ -34,3 +34,10 @@ def vae_loss(x, model, analytic_kl = True, kl_weight = 1.0):
 
     elbo = tf.math.reduce_mean(-kl_weight * kl_divergence - neg_log_likelihood)
     return -elbo
+
+class Encoder(tfk.layers.Layer): 
+
+    def __init__(self, dim_z, name="encoder", **kwargs):
+        super(Encoder, self).__init__(name=name, **kwargs)
+        self.dim_x = (28, 28, 1)
+        self.dim_z = dim_z
